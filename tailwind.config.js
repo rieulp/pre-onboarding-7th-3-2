@@ -8,16 +8,18 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {
+    colors: {
       primary: '#468FF7',
-      bg_blue: '#112141',
+      darkblue: '#112141',
       bg_grey: '#F0F2F5',
       grey: '#A3A9AF',
-      text_black: '#212121',
+      textblack: '#212121',
       red: '#EC5B56',
       yellow: '#EFB041',
-      light_grey: '#FAFAFA',
+      lightgrey: '#FAFAFA',
+      white: '#FFFFFF',
     },
+    extend: {},
   },
   plugins: [],
 };
