@@ -9,7 +9,7 @@ import styled from 'styled-components';
 function Sider() {
   const onClickLogout = async () => {
     const result = await logout();
-    if (result) Router.replace('/login');
+    if (result) Router.replace('/');
   };
   return (
     <SiderContainer className="bg-darkblue text-white min-h-screen">
@@ -22,7 +22,7 @@ function Sider() {
         </Link>
         <Accordion.Item heading={'계좌 목록'}>
           <ActiveLink
-            href="/dashboard/account?page=1"
+            href="/account"
             className="block py-3 pl-8"
             activeClassName="active"
           >
