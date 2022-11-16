@@ -1,8 +1,7 @@
-import type { Broker, AccountStatus } from './data';
+import type { Broker, AccountStatus } from "./data";
 export interface Account {
   id: number;
   user_id: number;
-  user_name: string;
   uuid: string;
   broker_id: Broker;
   status: AccountStatus;
