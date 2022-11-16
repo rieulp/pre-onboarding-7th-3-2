@@ -1,9 +1,11 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { getToken, removeToken, setToken } from 'lib/tokenStorage';
-import { ErrorResponse, LoginResponse } from 'model/auth';
+import { LoginResponse } from 'model/auth';
 import { AccountStatus, Broker } from 'model/data';
 import { Account, User } from 'model/db';
+
 import Router from 'next/router';
+import { toast } from 'react-toastify';
 
 export const api = axios.create({
   baseURL: '/api',
@@ -34,6 +36,26 @@ export const login = async (email: string, password: string) => {
       password,
     });
     const data = response.data;
+    // TODO: 타임아웃 값 쿼리에 저장, 로그아웃시, 클리어 타임아웃 & 데이터 날리기
+    // 1시간 시간 제한
+    const timer = setTimeout(() => {
+      toast.info('로그인 시간이 만료돼 로그인 페이지로 이동합니다.', {
+        position: 'top-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+      });
+      new Promise(() =>
+        setTimeout(() => {
+          console.log('logout!');
+          logout().then(() => Router.replace('/'));
+        }, 3500)
+      );
+    }, 60000 * 59);
     setToken(data.accessToken);
     return true;
   } catch (error) {
@@ -50,19 +72,37 @@ export const logout = async () => {
   }
 };
 
-export const getAccounts = (params?: AccountsQuery) => async () => {
-  try {
-    const response = await api.get<Account[]>('/accounts', {
-      params: { _limit: 20, ...params },
-    });
+export interface AccountsPage {
+  data: Account[] | null;
+  cur_page: number;
+}
 
-    if (response.status === 200) {
-      return response.data;
-    }
+export const getPageAccounts = async (
+  params: PageAccountsQuery
+): Promise<AccountsPage> => {
+  try {
+    const response = await api.get<Account[]>('/accounts', { params });
+    return {
+      data: response.data,
+      cur_page: params._page,
+    };
   } catch (error) {
     if (error === 'jwt expired') {
       await logout(); // 리다이렉트를 어떻게 해야할지
     }
+    return {
+      data: null,
+      cur_page: params._page,
+    };
+  }
+};
+
+export const getAccountDetail = async (id?: string) => {
+  if (!id) return [];
+  try {
+    const response = await api.get<Account[]>(`/accounts?id=${id}`);
+    return response.data;
+  } catch (error) {
     return [];
   }
 };
@@ -83,16 +123,19 @@ export const getUsers = async (params?: UsersQuery) => {
 };
 
 export interface AccountsQuery {
-  _page?: number;
-  // _limit?: number;
-  broker_id_like?: Broker;
-  is_active_like?: boolean;
-  user_id_like?: number;
-  status_like?: AccountStatus;
+  broker_id?: Broker;
+  is_active?: boolean;
+  user_id?: number;
+  status?: AccountStatus;
+}
+
+export interface PageAccountsQuery extends AccountsQuery {
+  _page: number;
+  _limit: number;
 }
 
 export interface UsersQuery {
-  id_like?: number;
-  is_staff_like?: boolean;
-  is_active_like?: boolean;
+  id?: number;
+  is_staff?: boolean;
+  is_active?: boolean;
 }
