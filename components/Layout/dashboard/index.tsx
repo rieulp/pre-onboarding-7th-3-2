@@ -4,6 +4,8 @@ import React, { ReactNode, useEffect } from 'react';
 import Footer from '../footer';
 import Header from './header';
 import Sider from './sider';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,16 +13,17 @@ interface LayoutProps {
 
 const title: Record<string, string> = {
   '/dashboard': '대시보드',
-  '/dashboard/account': '투자계좌',
-  '/dashboard/user': '김핀트님의 계좌 목록',
+  '/account': '투자계좌',
+  '/user': '김핀트님의 계좌 목록',
 };
 
 function Layout({ children }: LayoutProps) {
   const router = useRouter();
-  const token = getToken();
+
   useEffect(() => {
-    if (!token) router.replace('/login');
-  }, [router, token]);
+    const token = getToken();
+    if (!token) router.replace('/');
+  }, [router]);
 
   const { asPath } = router;
   return (
@@ -28,7 +31,10 @@ function Layout({ children }: LayoutProps) {
       <Sider />
       <div className="m-h-screen">
         <Header title={title[asPath] || ''} />
-        <main className="bg-bg_grey min-h-[calc(100vh-96px)]">{children}</main>
+        <main className="bg-bg_grey min-h-[calc(100vh-96px)]">
+          <ToastContainer />
+          {children}
+        </main>
         <Footer />
       </div>
     </div>

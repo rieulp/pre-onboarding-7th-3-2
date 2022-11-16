@@ -47,6 +47,7 @@ export const formattingAccount = (data?: Account[]) => {
       payments,
       is_active,
       created_at,
+      updated_at,
       id,
       user_id,
       ...rest
@@ -61,6 +62,7 @@ export const formattingAccount = (data?: Account[]) => {
         payments: commaNumberFormat(payments),
         is_active: is_active ? '활성' : '비활성',
         created_at: dateFormat(created_at),
+        updated_at: dateFormat(updated_at),
         ...rest,
       });
     }

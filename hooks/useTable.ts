@@ -3,11 +3,13 @@ import React, { useEffect, useRef, useState } from 'react';
 export interface Col<K> {
   key: keyof K;
   header: string;
+  isHidden?: boolean;
 }
 
 export interface Cell<K> {
   key: keyof K;
   value: string;
+  isHidden?: boolean;
 }
 
 export type Row<K> = Cell<K>[];
@@ -19,9 +21,8 @@ function useTable<T>() {
 
   useEffect(() => {
     if (!data || !columns || !data.length || !columns.length) return;
-    const keys = columns.map(({ key }) => key);
     const rowData = data.map((value) =>
-      keys.map((key) => ({ key, value: value[key] }))
+      columns.map(({ key, isHidden }) => ({ key, value: value[key], isHidden }))
     );
     setRows(rowData);
   }, [columns, data]);
