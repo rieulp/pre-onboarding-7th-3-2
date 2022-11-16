@@ -12,7 +12,7 @@ interface LayoutProps {
 function Layout({ children }: LayoutProps) {
   useEffect(() => {
     const token = getToken();
-    if (token) Router.replace('/dashboard');
+    if (token) Router.replace('/account');
   }, []);
 
   return (
