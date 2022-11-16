@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-function Footer() {
+const Footer = () => {
   return (
-    <div className="text-center p-3 bg-white">
-      Copyright ⓒ December and Company Inc.
-    </div>
+    <footer className={"w-full flex justify-center bg-gray1 p-2"}>
+      Copyright © December and Company Inc.
+    </footer>
   );
-}
+};
 
 export default Footer;

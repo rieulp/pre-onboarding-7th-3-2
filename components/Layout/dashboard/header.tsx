@@ -1,19 +1,22 @@
-import React from 'react';
+import React from "react";
 
-interface HeaderProps {
+interface Props {
   title: string;
 }
-function Header({ title }: HeaderProps) {
+
+const Header = ({ title }: Props) => {
   return (
-    <header className="shadow">
-      <div className="h-12 px-3 bg-white flex justify-between items-center">
-        <h1 className="text-l font-bold">
-          <span>{title}</span>
-        </h1>
-        <div>아이콘들</div>
+    <header
+      className={
+        "flex items-center justify-between px-7 bg-white h-16 drop-shadow-sm"
+      }
+    >
+      <h1 className={"items-start  text-black font-bold text-xl"}>{title}</h1>
+      <div className={"flex flex-row text-gray2 w-32 justify-between"}>
+        <span>개발</span>
       </div>
     </header>
   );
-}
+};
 
 export default Header;
