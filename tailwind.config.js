@@ -1,25 +1,32 @@
-const colors = require('tailwindcss/colors');
+const colors = require("tailwindcss/colors");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './app/**/*.{js,ts,jsx,tsx}',
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    colors: {
-      primary: '#468FF7',
-      darkblue: '#112141',
-      bg_grey: '#F0F2F5',
-      grey: '#A3A9AF',
-      textblack: '#212121',
-      red: '#EC5B56',
-      yellow: '#EFB041',
-      lightgrey: '#FAFAFA',
-      white: '#FFFFFF',
+    extend: {
+      gridTemplateColumns: {
+        layout: "20rem 1fr",
+      },
+      gridTemplateRows: {
+        basicContent: "6rem 1fr 4rem",
+        sideContent: "6rem auto",
+      },
+      height: {
+        vh100: "100vh",
+      },
+      colors: {
+        primary1: "#091e3b",
+        primary2: "#07162c",
+        primary3: "#3B8EF5",
+        white1: "#ffffff",
+        gray1: "#d0d0d0",
+        gray2: "#333333",
+      },
     },
-    extend: {},
   },
   plugins: [],
 };
