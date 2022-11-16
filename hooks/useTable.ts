@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export interface Col<K> {
   key: keyof K;
@@ -6,24 +6,32 @@ export interface Col<K> {
   isHidden?: boolean;
 }
 
-export interface Cell<K> {
-  key: keyof K;
-  value: string;
+export interface Cell<T> {
+  value: T;
   isHidden?: boolean;
 }
 
-export type Row<K> = Cell<K>[];
+export type Row<K> = Record<keyof K, Cell<K[keyof K]>>;
 
 function useTable<T>() {
-  const [data, setData] = useState<Record<keyof T, string>[]>();
+  const [data, setData] = useState<Record<keyof T, T[keyof T]>[]>();
   const [columns, setColumns] = useState<Col<T>[]>();
   const [rows, setRows] = useState<Row<T>[]>();
 
   useEffect(() => {
-    if (!data || !columns || !data.length || !columns.length) return;
-    const rowData = data.map((value) =>
-      columns.map(({ key, isHidden }) => ({ key, value: value[key], isHidden }))
-    );
+    if (!data || !columns) {
+      setRows(undefined);
+      return;
+    }
+    // if (!columns || !columns.length) return;
+
+    const rowData = data.map((val) => {
+      const newRow: Record<any, any> = {};
+      columns.forEach(
+        ({ key, isHidden }) => (newRow[key] = { value: val[key], isHidden })
+      );
+      return newRow as Row<T>;
+    });
     setRows(rowData);
   }, [columns, data]);
 

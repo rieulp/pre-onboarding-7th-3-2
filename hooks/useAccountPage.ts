@@ -1,56 +1,52 @@
-import { AccountsQuery, getPageAccounts } from 'api/api';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { type AccountsQuery, getPageAccounts } from "lib/api/account";
+import { useEffect, useState } from "react";
+
+const LIMIT = 20;
 
 function useAccountPage(InitialPage: number, query?: AccountsQuery) {
   const [page, setPage] = useState(InitialPage);
-  const {
-    data,
-    fetchPreviousPage,
-    fetchNextPage,
-    hasNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteQuery({
-    queryKey: ['accounts', query],
-    queryFn: ({ pageParam = InitialPage }) => {
-      return getPageAccounts({ ...query, _page: pageParam, _limit: 25 });
-    },
-    getNextPageParam: (lastPage) => {
-      return lastPage.data && lastPage.data.length
-        ? lastPage.cur_page + 1
-        : undefined;
-    },
-    getPreviousPageParam: (firstPage) => {
-      return firstPage.cur_page === 1 ? undefined : firstPage.cur_page - 1;
-    },
-  });
+  const [maxPage, setMaxPage] = useState<number>();
+
+  const { data, isError, isLoading } = useQuery(
+    ["accounts", query, page],
+    () => getPageAccounts({ ...query, _page: page, _limit: LIMIT }),
+    {
+      retry: 3,
+      retryDelay: 3000,
+    }
+  );
+
+  useEffect(() => {
+    if (data && maxPage === undefined) {
+      setMaxPage(Number(Math.ceil(data.totalCount / LIMIT)));
+    }
+  }, [data, maxPage]);
+
+  useEffect(() => {
+    setPage(1);
+    setMaxPage(undefined);
+  }, [query]);
 
   const nextPage = () => {
-    if (!hasNextPage && data && data.pages.length - 1 > page) {
-      setPage((prev) => prev + 1);
-      return;
-    }
-    fetchNextPage().then(
-      ({ hasNextPage }) => hasNextPage && setPage((prev) => prev + 1)
-    );
+    if (maxPage && maxPage <= page) return;
+    setPage((prev) => prev + 1);
   };
 
   const prevPage = () => {
     if (page === 1) return;
-    fetchPreviousPage().then(() => {
-      page > 1 && setPage((prev) => prev - 1);
-    });
+    setPage((prev) => prev - 1);
   };
 
   return {
     page,
-    accountsData: data,
+    setPage,
+    maxPage,
+    accountsData: data?.data,
     prevPage,
     nextPage,
     isLoading,
     isError,
   };
 }
-
 export default useAccountPage;

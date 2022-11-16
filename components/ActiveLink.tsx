@@ -1,7 +1,7 @@
-import Link, { type LinkProps } from 'next/link';
-import { useRouter } from 'next/router';
-import React from 'react';
-import styled from 'styled-components';
+import Link, { type LinkProps } from "next/link";
+import { useRouter } from "next/router";
+import React from "react";
+import styled from "styled-components";
 
 interface ActiveLinkProps extends LinkProps {
   children: React.ReactNode;
@@ -10,7 +10,7 @@ interface ActiveLinkProps extends LinkProps {
 }
 function ActiveLink({
   children,
-  className = '',
+  className = "",
   activeClassName,
   href,
   as,
@@ -18,7 +18,7 @@ function ActiveLink({
 }: ActiveLinkProps) {
   const { asPath } = useRouter();
   const cName =
-    asPath === href || asPath === as
+    asPath === href || asPath === as || asPath.startsWith(href.toString())
       ? `${className} ${activeClassName}`.trim()
       : className;
 
